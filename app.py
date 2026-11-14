@@ -193,8 +193,8 @@ with tab_mem:
                 "только дополнительная память алгоритма. Время здесь не меряем: "
                 "tracemalloc замедляет интерпретатор в 2–4 раза")
     mem_sizes = st.multiselect("Размеры N", [1000, 5000, 10000, 50000, 100000, 300000],
-                               default=[1000, 10000, 100000])
-    mem_repeats = st.slider("Повторов на точку", 1, 5, 3)
+                               default=[1000, 6000, 10000])
+    mem_repeats = st.slider("Повторов на точку", 1, 3, 1)
     if st.button("Замерить память", disabled=not selected):
         ms = {a: [n for n in mem_sizes if REGISTRY[a].family == "linear" or n <= 10000]
               for a in selected}

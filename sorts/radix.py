@@ -32,7 +32,7 @@ from __future__ import annotations
 import struct
 from typing import Any, Callable
 
-from .types import SortResult
+from ._types import SortResult
 
 _MASK64 = (1 << 64) - 1
 _SIGN64 = 1 << 63

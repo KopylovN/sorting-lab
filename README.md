@@ -5,14 +5,16 @@
 ## Быстрый старт
 
 ```bash
-git clone <https://github.com/KopylovN/sorting-lab.git>
+git clone https://github.com/KopylovN/sorting-lab.git
 cd sorting-lab
+
 python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+source .venv/Scripts/activate        # Git Bash (Windows)
+# .venv\Scripts\activate             # cmd / PowerShell
+# source .venv/bin/activate          # Linux / macOS
 
-pytest -q                        # автотесты
-streamlit run app.py             # дашборд: http://localhost:8501
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
 
-# полный воспроизводимый прогон
-python -m bench.cli --profile full --repeats 7 --memory
+python -m pytest -q                  # автотесты
+python -m streamlit run app.py       # дашборд: http://localhost:8501

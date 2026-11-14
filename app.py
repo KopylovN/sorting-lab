@@ -29,13 +29,13 @@ ALL_DIST = "Все пять распределений (сравнение)"
 st.set_page_config(page_title="ИДЗ №1 — Сортировки", page_icon="📊", layout="wide")
 
 
-def show(fig, container=None) -> None:
+def show(fig, container=None, key: str | None = None) -> None:
     """Совместимый вывод plotly-графика (старые/новые версии Streamlit)"""
     target = container if container is not None else st
     try:
-        target.plotly_chart(fig, width="stretch")
+        target.plotly_chart(fig, width="stretch", key=key)
     except TypeError:
-        target.plotly_chart(fig, use_container_width=True)
+        target.plotly_chart(fig, use_container_width=True, key=key)
 
 
 def resolve_sizes(selected: list[str], mode: str, manual: list[int]) -> dict[str, list[int]]:
@@ -119,15 +119,15 @@ with tab_run:
         scale = st.radio("Масштаб осей", ["Линейный", "Log-Log"], horizontal=True)
         loglog = scale == "Log-Log"
         if len(dists) == 1:
-            show(iv.time_chart(agg, dists[0], loglog))
+            show(iv.time_chart(agg, dists[0], loglog), key="chart_time")
         else:
-            show(iv.facet_chart(agg, loglog))
+            show(iv.facet_chart(agg, loglog), key="chart_facet")
 
         c1, c2 = st.columns(2)
         with c1:
-            show(iv.counters_chart(agg, dists[0], "comparisons_mean"))
+            show(iv.counters_chart(agg, dists[0], "comparisons_mean"), key="chart_comparisons")
         with c2:
-            show(iv.counters_chart(agg, dists[0], "writes_mean"))
+            show(iv.counters_chart(agg, dists[0], "writes_mean"), key="chart_writes")
 
         st.markdown("#### Сводная статистика (μ, σ, медиана)")
         st.dataframe(agg, hide_index=True)
@@ -172,7 +172,7 @@ with tab_fit:
         model = c3.selectbox("Теоретическая модель", list(MODELS),
                              index=list(MODELS).index(default_model))
         fig, c, r2, k = iv.fit_chart(agg, aid, dist, model)
-        show(fig)
+        show(fig, key="chart_fit")
         m1, m2, m3 = st.columns(3)
         m1.metric("Коэффициент c МНК", f"{c:.3e}")
         m2.metric("R²", f"{r2:.4f}")
@@ -206,7 +206,7 @@ with tab_mem:
         st.session_state["mem"] = mem
     mem = st.session_state.get("mem")
     if mem is not None:
-        show(iv.memory_chart(mem))
+        show(iv.memory_chart(mem), key="chart_memory")
         st.dataframe(mem, hide_index=True)
         st.caption("In-place (Insertion/Selection) → O(1): пик единицы КБ (служебные объекты). "
                    "Radix → O(N + base): буфер + список pos ≈ 16·N байт.")
@@ -252,7 +252,7 @@ with tab_anim:
         def draw(i: int) -> None:
             """Отрисовка одного кадра."""
             f = frames[i]
-            show(iv.frame_chart(f, f"Кадр {i + 1}/{last + 1}"), container=chart_ph)
+            show(iv.frame_chart(f, f"Кадр {i + 1}/{last + 1}"), container=chart_ph, key=f"chart_frame_{i}")
             info_ph.markdown(f"**{f['message']}**  ·  сравнений: `{f['comparisons']}`  "
                              f"·  записей: `{f['writes']}`")
             if f["buckets"] is not None:

@@ -271,17 +271,3 @@ with tab_anim:
         draw(pos)
         with st.expander("Исходный массив"):
             st.code(st.session_state.get("anim_src"))
-
-# ----------------------------- ТАБ 5: ОТЧЁТ -----------------------------
-with tab_report:
-    st.subheader("Паспорт варианта")
-    st.table(pd.DataFrame([{
-        "Алгоритм": s.name, "Семейство": s.family, "Best": s.time_best, "Avg": s.time_avg,
-        "Worst": s.time_worst, "Память": s.memory, "In-place": s.inplace,
-        "Устойчивая": s.stable, "Сравнительная": s.comparison_based, "Домен": s.domain,
-    } for s in REGISTRY.values()]))
-    path = Path(__file__).parent / "ANALYSIS.md"
-    if path.exists():
-        st.markdown(path.read_text(encoding="utf-8"))
-    else:
-        st.warning("Создайте ANALYSIS.md с аналитическими выводами")
